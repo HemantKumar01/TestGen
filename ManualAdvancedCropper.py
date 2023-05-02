@@ -1,15 +1,20 @@
 # this version checks the keyword "Answer" instead of numbers
 
+from pathlib import Path
 import pytesseract
 import cv2
 from pdf2image import convert_from_path
 import numpy as np
 
-pdf_file = 'D:/Test Papers/JEE Adv 2012 P2.pdf'
-chapterName = "JEE-2012-P2"
+# ?-------------------------USER_CONFIG----------------------------------------------------
+pdf_file = 'D:/Test Papers/JEE Adv 2014 P2.pdf'
+chapterName = "JEE-2014-P2"
 # set this to be false if you have already saved the pages #!if false then also set config.totalPages
 savePagesFirst = True
+# ?-----------------------------------------------------------------------------------------
 
+
+Path(f"./{chapterName}").mkdir(parents=True, exist_ok=True)
 
 img = None
 cachedImg = None
@@ -54,7 +59,7 @@ def pdfToImage():
     for page in pages:
         page.save(f'./raw_pages/page{i}.jpg', 'JPEG')
         i += 1
-    config.totalPages = i
+    config.totalPages = i - 1
 
 
 def cropManager(image, newY):
@@ -129,7 +134,7 @@ def cropAndSave(image, quesNum, y1, y2):
 
     imgCropped = cv2.resize(
         imgCropped, (0, 0), fx=config.downScaleFactor, fy=config.downScaleFactor)
-    cv2.imwrite(f'./output/{quesNum}.png', imgCropped)
+    cv2.imwrite(f'./{chapterName}/{quesNum}.png', imgCropped)
 
 
 if (savePagesFirst):
