@@ -7,8 +7,8 @@ from pdf2image import convert_from_path
 import numpy as np
 
 # ?-------------------------USER_CONFIG----------------------------------------------------
-pdf_file = 'D:/Test Papers/JEE Adv 2014 P2.pdf'
-chapterName = "JEE-2014-P2"
+pdf_file = "D:/Test Papers/JEE Adv 2022-P1.pdf"
+chapterName = "JEE-2022-P1"
 # set this to be false if you have already saved the pages #!if false then also set config.totalPages
 savePagesFirst = True
 # ?-----------------------------------------------------------------------------------------
@@ -53,25 +53,27 @@ def ResizeWithAspectRatio(image, width=None, height=None, inter=cv2.INTER_AREA):
 
 
 def pdfToImage():
-    pages = convert_from_path(pdf_file,
-                              poppler_path='./poppler/poppler-22.04.0/Library/bin/')
+    pages = convert_from_path(
+        pdf_file, poppler_path="./poppler/poppler-22.04.0/Library/bin/"
+    )
     i = 1
     for page in pages:
-        page.save(f'./raw_pages/page{i}.jpg', 'JPEG')
+        page.save(f"./raw_pages/page{i}.jpg", "JPEG")
         i += 1
     config.totalPages = i - 1
 
 
 def cropManager(image, newY):
     global quesNum, cropHeight
-    if (cropHeight != -1):
+    if cropHeight != -1:
         print("Saving Ques. no. ", quesNum)
 
-        cropAndSave(image, quesNum, cropHeight+2, newY-2)
+        cropAndSave(image, quesNum, cropHeight + 2, newY - 2)
         cropHeight = -1
         quesNum += 1
     else:
         cropHeight = newY
+
 
 # function to get the coordinates of
 # of the points clicked on the image
@@ -81,14 +83,12 @@ def click_event(event, x, y, flags, params):
     global cropHeights, cachedImg, img, quesNum, height
     # checking for left mouse clicks for drawing reference line
     if event == cv2.EVENT_MOUSEMOVE:
-
         img = cachedImg.copy()
         img = ResizeWithAspectRatio(img, height=windowHeight)
         line_thickness = 2
 
-        cv2.line(img, (0, y), (width, y),
-                 (200, 200, 230), thickness=line_thickness)
-        cv2.imshow('Image', img)
+        cv2.line(img, (0, y), (width, y), (200, 200, 230), thickness=line_thickness)
+        cv2.imshow("Image", img)
 
     # checking for left mouse clicks for setting point
     if event == cv2.EVENT_LBUTTONDOWN:
@@ -96,13 +96,17 @@ def click_event(event, x, y, flags, params):
         img = ResizeWithAspectRatio(img, height=windowHeight)
 
         line_thickness = 2
-        cv2.line(img, (0, y), (width, y),
-                 (200, 200, 230), thickness=line_thickness)
-        cv2.line(cachedImg, (0, round((y/windowHeight)*height)), (width, round((y/windowHeight)*height)),
-                 (200, 200, 230), thickness=line_thickness)
-        cropManager(cachedImg,  round((y/windowHeight)*height))
+        cv2.line(img, (0, y), (width, y), (200, 200, 230), thickness=line_thickness)
+        cv2.line(
+            cachedImg,
+            (0, round((y / windowHeight) * height)),
+            (width, round((y / windowHeight) * height)),
+            (200, 200, 230),
+            thickness=line_thickness,
+        )
+        cropManager(cachedImg, round((y / windowHeight) * height))
 
-        cv2.imshow('Image', img)
+        cv2.imshow("Image", img)
 
 
 def getCoords():
@@ -120,7 +124,7 @@ def getCoords():
 
         # setting mouse handler for the image
         # and calling the click_event() function
-        cv2.setMouseCallback(f'Image', click_event)
+        cv2.setMouseCallback(f"Image", click_event)
 
         # wait for a key to be pressed to exit
         cv2.waitKey(0)
@@ -130,13 +134,14 @@ def getCoords():
 
 
 def cropAndSave(image, quesNum, y1, y2):
-    imgCropped = image[y1:y2, config.border["left"]:config.border["right"]]
+    imgCropped = image[y1:y2, config.border["left"] : config.border["right"]]
 
     imgCropped = cv2.resize(
-        imgCropped, (0, 0), fx=config.downScaleFactor, fy=config.downScaleFactor)
-    cv2.imwrite(f'./{chapterName}/{quesNum}.png', imgCropped)
+        imgCropped, (0, 0), fx=config.downScaleFactor, fy=config.downScaleFactor
+    )
+    cv2.imwrite(f"./{chapterName}/{quesNum}.png", imgCropped)
 
 
-if (savePagesFirst):
+if savePagesFirst:
     pdfToImage()
 getCoords()
