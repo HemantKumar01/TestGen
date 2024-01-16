@@ -7,8 +7,8 @@ from pdf2image import convert_from_path
 import numpy as np
 
 # ?-------------------------USER_CONFIG----------------------------------------------------
-pdf_file = "D:/Test Papers/JEE Adv 2022-P1.pdf"
-chapterName = "JEE-2022-P1"
+pdf_file = "./allen.pdf"
+chapterName = "allen"
 # set this to be false if you have already saved the pages #!if false then also set config.totalPages
 savePagesFirst = True
 # ?-----------------------------------------------------------------------------------------
@@ -54,7 +54,7 @@ def ResizeWithAspectRatio(image, width=None, height=None, inter=cv2.INTER_AREA):
 
 def pdfToImage():
     pages = convert_from_path(
-        pdf_file, poppler_path="./poppler/poppler-22.04.0/Library/bin/"
+        pdf_file, poppler_path="./poppler/poppler-23.11.0/Library/bin/"
     )
     i = 1
     for page in pages:
